@@ -153,7 +153,7 @@
           "const": 2
         },
         "ThisIPAddress": {
-          "const": "modbus+tcp://192.168.1.1:502/"
+          "const": "modbus+tcp://71.202.145.92:502/"
         }
       }
     }
