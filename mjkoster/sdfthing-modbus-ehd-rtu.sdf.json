@@ -102,42 +102,53 @@
         "HoldingRegisters": {
           "description": "Holding Register Block for ReadMultiple",
           "sdfProperty": {
-            "type": "array",
-            "items": [
-              "#/sdfThing/EHD_RTU/sdfObject/UHVMeasurement/sdfProperty/Sensor_Value",
-              "#/sdfThing/EHD_RTU/sdfObject/IHVMeasurement/sdfProperty/Sensor_Value",
-              "#/sdfThing/EHD_RTU/sdfObject/ThrustMeasurement/sdfProperty/Sensor_Value"
-            ],
-            "WotProtocolBinding": {
-              "op": "readproperty",
-              "href": { "sdfRef": "#/sdfThing/EHD_RTU/sdfData/ThisIPAddress/" },
-              "modv:unitID": { "sdfRef": "#/sdfThing/EHD_RTU/sdfData/ThisUnitID" },
-              "modv:entity": "HoldingRegister",
-              "modv:offset": "3",
-              "modv:function": "3",
-              "modv:length": 3
+            "RegisterBlock": {
+              "type": "array",
+              "items": [
+                "#/sdfThing/EHD_RTU/sdfObject/UHVMeasurement/sdfProperty/Sensor_Value",
+                "#/sdfThing/EHD_RTU/sdfObject/IHVMeasurement/sdfProperty/Sensor_Value",
+                "#/sdfThing/EHD_RTU/sdfObject/ThrustMeasurement/sdfProperty/Sensor_Value"
+              ],
+              "WotProtocolBinding": {
+                "op": "readproperty",
+                "href": { "sdfRef": "#/sdfThing/EHD_RTU/sdfData/ThisIPAddress/" },
+                "modv:unitID": { "sdfRef": "#/sdfThing/EHD_RTU/sdfData/ThisUnitID" },
+                "modv:entity": "HoldingRegister",
+                "modv:offset": "3",
+                "modv:function": "3",
+                "modv:length": 3
+              }
             }
           }
         }
       },
       "sdfData": {
         "UHVData": {
+          "type": "number",
           "units": "V",
           "minimum": 0,
-          "maximum": 120000,
-          "multipleOf": 100
+          "maximum": 1200,
+          "multipleOf": 1,
+          "scaleMinimum": 0,
+          "scaleMaximum": 120000
         },
         "IHVData": {
+          "type": "number",
           "units": "A",
           "minimum": 0,
-          "maximum": 0.002,
-          "multipleOf": 0.000001
+          "maximum": 2000,
+          "multipleOf": 1,
+          "scaleMinimum": 0,
+          "scaleMaximum": 0.002
         },
         "ThrustData": {
+          "type": "number",
           "units": "N",
           "minimum": 0,
-          "maximum": 2,
-          "multipleOf": 0.001
+          "maximum": 2000,
+          "multipleOf": 1,
+          "scaleMinimum": 0,
+          "scaleMaximum": 2
         },
         "ModbusUnitID": {
           "description": "Modbus RTU Unit ID",
@@ -153,7 +164,7 @@
           "const": 2
         },
         "ThisIPAddress": {
-          "const": "modbus+tcp://192.168.1.1:502/"
+          "const": "modbus+tcp://71.202.145.92:502/"
         }
       }
     }

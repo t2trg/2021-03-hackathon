@@ -1,0 +1,119 @@
+{
+    "@context": [
+        "https://www.w3.org/2019/wot/td/v1",
+        {
+            "fb": "https://onedm.org/exploratory/onefb/",
+            "pg": "https://onedm.org/playground/",            
+            "modv": "https://www.example.com/ns/modbustcp/"
+        }
+    ],
+    "title": "EHD_RTU",
+    "description": "Modbus RTU for EHD Thruster experiment, measures HV voltage, HV current, and resulting thrust",
+    "id": "uri:dev:uuid:5de7f6c9-0cef-412d-9754-2b844ed63637",
+    "securityDefinitions": {
+        "nosec_sc": {
+            "scheme": "nosec"
+        }
+    },
+    "security": "nosec_sc",
+
+    "base": "",
+    "@type": [
+        "Thing",
+        "fb:#/sdfThing/EHD_RTU"
+    ],
+    "properties": {
+        "UHVMeasurement/Sensor_Value": {
+            "description": "Thruster HV Voltage Measurement Value",
+            "@type": [
+                "fb:#/sdfThing/EHD_RTU/sdfObject/VHVMeasurement/sdfProperty/Sensor_Value",
+                "pg:#/sdfObject/Voltage"
+            ],
+            "readOnly": true,
+            "type": "number",
+            "units": "V",
+            "minimum": 0,
+            "maximum": 1200,
+            "multipleOf": 1,
+            "scaleMinimum": 0,
+            "scaleMaximum": 120000,
+            "Forms": [{
+                "op": "readproperty",
+                "href": "modbus+tcp://71.202.145.92:502/",
+                "modv:unitID": "2",
+                "modv:entity": "HoldingRegister",
+                "modv:offset": "0",
+                "modv:function": "3",
+                "modv:length": 1
+            }]
+        },
+        "IHVMeasurement/Sensor_Value": {
+            "description": "Thruster HV Amperage Measurement Value",
+            "@type": [
+                "fb:#/sdfThing/EHD_RTU/sdfObject/IHVMeasurement/sdfProperty/Sensor_Value",
+                "pg:#/sdfObject/Current"
+            ],
+            "readOnly": true,
+            "type": "number",
+            "units": "A",
+            "minimum": 0,
+            "maximum": 2000,
+            "multipleOf": 1,  
+            "scaleMinimum": 0,
+            "scaleMaximum": 0.002,
+            "Forms": [{
+                "op": "readproperty",
+                "href": "modbus+tcp://71.202.145.92:502/",
+                "modv:unitID": "2",
+                "modv:entity": "HoldingRegister",
+                "modv:offset": "1",
+                "modv:function": "3",
+                "modv:length": 1
+            }]
+        },
+        "ThrustMeasurement/Sensor_Value": {
+            "description": "Thrust Measurement Value",
+            "@type": [
+                "fb:#/sdfThing/EHD_RTU/sdfObject/ThrustMeasurement/sdfProperty/Sensor_Value",
+                "pg:#/sdfObject/Load"
+            ],
+            "readOnly": true,
+            "type": "number",
+            "units": "N",
+            "minimum": 0,
+            "maximum": 2000,
+            "multipleOf": 1,  
+            "scaleMinimum": 0,
+            "scaleMaximum": 2,
+            "Forms": [{
+                "op": "readproperty",
+                "href": "modbus+tcp://71.202.145.92:502/",
+                "modv:unitID": "2",
+                "modv:entity": "HoldingRegister",
+                "modv:offset": "2",
+                "modv:function": "3",
+                "modv:length": 1
+            }]
+        },
+        "HoldingRegisters/RegisterBlock": {
+            "description": "Read all registers",
+            "@type": "fb:#/sdfThing/EHD_RTU/sdfObject/HoldingRegisters/sdfProperty/RegisterBlock",
+            "readOnly": true,
+            "type": "array",
+            "items": {
+                "UHVMeasurement/Sensor_Value": { "@id": "#/properties/UHVMeasurement/Sensor_Value" },
+                "IHVMeasurement/Sensor_Value": { "@id": "#/properties/IHVMeasurement/Sensor_Value" },
+                "ThrustMeasurement/Sensor_Value": { "@id": "#/properties/ThrustMeasurement/Sensor_Value" }
+            },
+            "Forms": [{
+                "op": "readproperty",
+                "href": "modbus+tcp://71.202.145.92:502/",
+                "modv:unitID": "2",
+                "modv:entity": "HoldingRegister",
+                "modv:offset": "0",
+                "modv:function": "3",
+                "modv:length": 3
+            }]
+        }
+    }
+}
