@@ -1,0 +1,218 @@
+Binding = {
+    info: Info,
+    sdfSecurity: SdfSecurity,
+    sdfBindings: SdfBindings,
+}
+
+Info = {
+    title: tstr, 
+    ? description: tstr, 
+    ? id: uri,
+}
+
+SdfBindings = {
+    ? coap: CoapBinding,
+    ? http: HttpBinding,
+    ? mqtt: MqttBinding,
+}
+
+Operation = { 
+    ? security: [+ tstr]; Must refer to a keys from sdfSecurity 
+    affordance: tstr .regexp "[^/]([^/?#]+\/[^/?#]+)+[^/]", 
+}
+
+CoapBinding = {
+    defaultSecurity: [+ tstr]; Must refer to keys from sdfSecurity
+    host: tstr,
+    ? port: (0..65535) .default 5683,
+    * tstr
+    "\/[^\/]+([^?#]+)": CoapPropertyAffordance
+    / CoapActionAffordance
+    / CoapEventAffordance,
+}
+
+CoapPropertyAffordance = {
+    ? readProperty: [+ CoapReadOperation],
+    ? writeProperty: [+ CoapWriteOperation],
+    ? observeProperty: [+ CoapObserveOperation],
+    ? unobserveProperty: [+ CoapUnobserveOperation],
+}
+
+CoapActionAffordance = {
+    ? invokeAction: CoapInvokeOperation,
+}
+
+CoapEventAffordance = {
+    ? subscribeEvent: [+ CoapObserveOperation]; Similarity between observing a property and subscribing to an event makes it possible to reuse the observe and unobserve definitions
+    ? unsubscribeEvent: [+ CoapUnobserveOperation],
+}
+
+CoapMethod = "GET" / "POST" / "PUT" / "DELETE" / "FETCH" / "PATCH" / "iPATCH"
+
+CoapOperation = {
+    Operation,
+    * options: CoapOption,
+}
+
+CoapOption = {
+    name: tstr,
+    value: any,
+}
+
+CoapReadOperation = {
+    CoapOperation, 
+    ? method: CoapMethod .default "GET", 
+}
+
+CoapWriteOperation = {
+    CoapOperation,
+    ? method: CoapMethod .default "GET",
+}
+
+CoapObserveOperation = {
+    CoapOperation,
+    ? method: CoapMethod .default "GET",
+    ? options: [ * CoapOption ] .default CoapObserveOption, 
+}
+
+CoapUnobserveOperation = {
+    CoapOperation,
+    ? method: CoapMethod .default "GET",
+    ? options: [ * CoapOption ] .default CoapUnobserveOption,
+}
+
+CoapObserveOption = {
+    [
+        {
+            name: "Observe",
+            value: 0,
+        } 
+    ]
+}
+
+CoapUnobserveOption = {
+    [ 
+        {
+            name: "Observe",
+            value: 1,
+        }
+    ]
+}
+
+CoapInvokeOperation = {
+    Operation, 
+    ? method: CoapMethod .default "POST", 
+}
+
+MqttBinding = {
+    defaultSecurity: [+ tstr]; Must refer to keys from sdfSecurity
+    brokerAddress: tstr,
+    ? port: (0..65535) .default 1883,
+    * tstr
+    "[^+#]+": MqttPropertyAffordance; Key does not refer to a URI path but an MQTT topic
+    / MqttActionAffordance
+    / MqttEventAffordance,
+}
+
+MqttPropertyAffordance = {
+    ? writeProperty: [+ MqttWriteOperation],
+    ? observeProperty: [+ MqttSubscribeOperation]; Because of MQTT's PubSub pattern there is only observe, no read
+    ? unobserveProperty: [+ MqttUnsubscribeOperation],
+}
+
+MqttActionAffordance = {
+    ? invokeAction: [+ MqttInvokeOperation],
+}
+
+MqttEventAffordance = {
+    ? subscribeEvent: [+ MqttSubscribeOperation],
+    ? unsubscribeEvent: [+ MqttUnsubscribeOperation],
+}
+
+MqttOperation = {
+    Operation,
+    * options: MqttOption,
+}
+
+MqttWriteOperation = {
+    MqttOperation,
+    ? controlFlag: MqttControlFlag .default "PUBLISH",
+}
+
+MqttSubscribeOperation = {
+    MqttOperation,
+    ? controlFlag: MqttControlFlag .default "SUBSCRIBE",
+}
+
+MqttUnsubscribeOperation = {
+    MqttOperation,
+    affordance: int,
+    ? controlFlag: MqttControlFlag .default "UNSUBSCRIBE",
+}
+
+MqttControlFlag = "PUBLISH" / "SUBSCRIBE" / "UNSUBSCRIBE"; Should more flags be added?
+
+MqttOption = {
+    name: "qos" / "retain" / "dup",
+    value: 0..2,
+}
+
+SdfSecurity = { * tstr: NoSecurity
+    / BasicSecurity
+    / DigestSecurity
+    / APIKeySecurity
+    / BearerSecurity
+    / PSKSecurity
+    / OAuth2Security, }
+
+Security = {
+    ? @type: tstr,
+    ? description: tstr,
+    ? proxy: uri,
+}
+
+NoSecurity = { Security, scheme: "nosec", }
+
+SecurityIn = "header"
+    / "query"
+    / "body"
+    / "cookie"
+    / "uri"
+
+BasicSecurity = {
+    Security,
+    scheme: "basic",
+    name: tstr,
+    ? in: SecurityIn,
+}
+
+DigestSecurity = {
+    Security,
+    scheme: "digest",
+    ? qop: "auth" / "auth-int",
+    ? in: SecurityIn,
+}
+
+APIKeySecurity = { Security, scheme: "api", ? in: SecurityIn, }
+
+BearerSecurity = {
+    Security,
+    scheme: "bearer",
+    ? name: tstr,
+    ? in: SecurityIn,
+    ? alg: tstr,
+    ? format: tstr,
+    ? authorization: uri,
+}
+
+PSKSecurity = { Security, scheme: "psk", ? identity: tstr, }
+
+OAuth2Security = {
+    Security,
+    scheme: "oauth2",
+    flow: tstr,
+    ? scopes: [ + tstr ],
+    ? authorization: uri,
+    ? token: uri,
+    ? refresh: uri,
+}
