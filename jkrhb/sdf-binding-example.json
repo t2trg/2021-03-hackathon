@@ -1,0 +1,87 @@
+{
+    "sdfObject": {
+        "Switch": {
+            "sdfProperty": {
+                "value": {
+                    "bindings": {
+                        "readSdfProperty": [
+                            {
+                                "protocol": "coap",
+                                "href": "/switch/value",
+                                "method": "GET"
+                            }
+                        ],
+                        "writeSdfProperty": [
+                            {
+                                "protocol": "coap",
+                                "href": "/switch/value",
+                                "method": "PUT"
+                            }
+                        ],
+                        "observeSdfProperty": [
+                            {
+                                "protocol": "coap",
+                                "href": "/switch/value",
+                                "method": "GET",
+                                "options": [
+                                    {
+                                        "name": "Observe",
+                                        "value": 0
+                                    }
+                                ]
+                            }
+                        ],
+                        "unobserveSdfProperty": [
+                            {
+                                "protocol": "coap",
+                                "href": "/switch/value",
+                                "method": "GET",
+                                "options": [
+                                    {
+                                        "name": "Observe",
+                                        "value": 1
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            },
+            "sdfAction": {
+                "on": {
+                    "bindings": {
+                        "invokeSdfAction": [
+                            {
+                                "protocol": "coap",
+                                "href": "/switch/on",
+                                "method": "POST"
+                            }
+                        ]
+                    }
+                },
+                "off": {
+                    "bindings": {
+                        "invokeSdfAction": [
+                            {
+                                "protocol": "coap",
+                                "href": "/switch/off",
+                                "method": "POST"
+                            }
+                        ]
+                    }
+                },
+                "toggle": {
+                    "bindings": {
+                        "invokeSdfAction": [
+                            {
+                                "protocol": "coap",
+                                "href": "/switch/toggle",
+                                "method": "POST"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}
