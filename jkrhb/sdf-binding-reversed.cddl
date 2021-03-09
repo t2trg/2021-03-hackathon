@@ -25,10 +25,7 @@ CoapBinding = {
     defaultSecurity: [+ tstr]; Must refer to keys from sdfSecurity
     host: tstr,
     ? port: (0..65535) .default 5683,
-    * tstr
-    "\/[^\/]+([^?#]+)": CoapPropertyAffordance
-    / CoapActionAffordance
-    / CoapEventAffordance,
+    * tstr: CoapPropertyAffordance / CoapActionAffordance / CoapEventAffordance; Can you define a regex pattern for the keys?
 }
 
 CoapPropertyAffordance = {
@@ -108,10 +105,7 @@ MqttBinding = {
     defaultSecurity: [+ tstr]; Must refer to keys from sdfSecurity
     brokerAddress: tstr,
     ? port: (0..65535) .default 1883,
-    * tstr
-    "[^+#]+": MqttPropertyAffordance; Key does not refer to a URI path but an MQTT topic
-    / MqttActionAffordance
-    / MqttEventAffordance,
+    * tstr: MqttPropertyAffordance / MqttActionAffordance / MqttEventAffordance; Key does not refer to a URI path but an MQTT topic
 }
 
 MqttPropertyAffordance = {
@@ -163,7 +157,8 @@ SdfSecurity = { * tstr: NoSecurity
     / APIKeySecurity
     / BearerSecurity
     / PSKSecurity
-    / OAuth2Security, }
+    / OAuth2Security,
+}
 
 Security = {
     ? @type: tstr,
@@ -171,13 +166,12 @@ Security = {
     ? proxy: uri,
 }
 
-NoSecurity = { Security, scheme: "nosec", }
+NoSecurity = {
+    Security,
+    scheme: "nosec",
+}
 
-SecurityIn = "header"
-    / "query"
-    / "body"
-    / "cookie"
-    / "uri"
+SecurityIn = "header" / "query" / "body" / "cookie" / "uri"
 
 BasicSecurity = {
     Security,
@@ -193,7 +187,11 @@ DigestSecurity = {
     ? in: SecurityIn,
 }
 
-APIKeySecurity = { Security, scheme: "api", ? in: SecurityIn, }
+APIKeySecurity = {
+    Security,
+    scheme: "api",
+    ? in: SecurityIn,
+}
 
 BearerSecurity = {
     Security,
@@ -205,7 +203,11 @@ BearerSecurity = {
     ? authorization: uri,
 }
 
-PSKSecurity = { Security, scheme: "psk", ? identity: tstr, }
+PSKSecurity = {
+    Security,
+    scheme: "psk",
+    ? identity: tstr,
+}
 
 OAuth2Security = {
     Security,
