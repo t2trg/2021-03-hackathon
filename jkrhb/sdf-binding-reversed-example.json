@@ -1,0 +1,81 @@
+{
+    "info": {
+        "title": "Example protocol bindings for OneDM Semantic Definition Format",
+        "description": "This document defines example protocol bindings for OneDM Semantic Definition Format",
+        "id": "urn:foo:bar:9001-Lightswitch-43"
+    },
+    "sdfSecurity": {
+        "nosec_sc": { "scheme": "nosec" },
+        "psk_sc": { "scheme": "psk" }
+    },
+    "sdfBindings": {
+        "coap": {
+            "defaultSecurity": ["psk_sc"],
+            "host": "lightswitch.example.org",
+            "port": 5683,
+            "/switch/value": {
+                "readProperty": [
+                    {
+                        "method": "GET",
+                        "affordance": "sdfObject/Switch/sdfProperty/value",
+                        "security": "nosec_sc"
+                    }
+                ],
+                "writeProperty": [
+                    {
+                        "method": "PUT",
+                        "affordance": "sdfObject/Switch/sdfProperty/value"
+                    }
+                ],
+                "observeProperty": [
+                    {
+                        "method": "GET",
+                        "affordance": "sdfObject/Switch/sdfProperty/value",
+                        "options": [
+                            {
+                                "name": "Observe",
+                                "value": 0
+                            }
+                        ]
+                    }
+                ],
+                "unobserveProperty": [
+                    {
+                        "method": "GET",
+                        "affordance": "sdfObject/Switch/sdfProperty/value",
+                        "options": [
+                            {
+                                "name": "Observe",
+                                "value": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            "/switch/on": {
+                "invokeAction": [
+                    {
+                        "method": "POST",
+                        "affordance": "sdfObject/Switch/sdfAction/on"
+                    }
+                ]
+            },
+            "/switch/off": {
+                "invokeAction": [
+                    {
+                        "method": "POST",
+                        "affordance": "sdfObject/Switch/sdfAction/off"
+                    }
+                ]
+            },
+            "/switch/toggle": {
+                "invokeAction": [
+                    {
+                        "method": "POST",
+                        "affordance": "sdfObject/Switch/sdfAction/toggle"
+                    }
+                ]
+            }
+        }
+    }
+}
